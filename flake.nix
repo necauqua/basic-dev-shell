@@ -3,7 +3,7 @@
     make = pkgsFn:
       flake-utils.lib.eachDefaultSystem (system:
         let
-          pkgs = import nixpkgs { inherit system; };
+          pkgs = nixpkgs.legacyPackages."${system}";
         in {
           devShell = pkgs.mkShell {
             buildInputs = pkgsFn pkgs;
