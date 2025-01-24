@@ -1,13 +1,18 @@
 {
   outputs = { self, nixpkgs, flake-utils }: {
-    make = pkgsFn:
+    make = fn:
       flake-utils.lib.eachDefaultSystem (system:
         let
           pkgs = nixpkgs.legacyPackages."${system}";
+          arg = fn pkgs;
         in {
-          devShell = pkgs.mkShell {
-            buildInputs = pkgsFn pkgs;
-          };
+          devShell = (pkgs.mkShell (
+            if (builtins.typeOf arg) == "list" then
+              {
+                buildInputs = arg;
+              }
+            else arg
+          ));
         }
       );
   };
